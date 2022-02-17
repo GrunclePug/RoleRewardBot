@@ -46,7 +46,7 @@ public class RoleReward extends ListenerAdapter {
                 // Ignore if embed is empty
             }
         } else {
-            try {
+            if(event.getMember().getRoles().contains(event.getGuild().getRoleById(ROLE_ID))) {
                 event.getGuild().removeRoleFromMember(event.getMember(), event.getGuild().getRoleById(ROLE_ID)).queue();
                 SupporterCount.updateCount("REMOVE");
 
@@ -56,10 +56,12 @@ public class RoleReward extends ListenerAdapter {
                         .setThumbnail(event.getGuild().getIconUrl())
                         .setFooter(Config.DATE_FORMAT.format(date), "https://imgur.com/Y76sIok.png");
 
-                Driver.jda.getTextChannelById(LOG_CHANNEL).sendMessageEmbeds(builder.build()).queue();
-                Driver.jda.getTextChannelById(LOG_CHANNEL).getManager().setName("Supporters: " + SupporterCount.getCount()).queue();
-            } catch(Exception e) {
-                // Ignore if user doesn't have role
+                try {
+                    Driver.jda.getTextChannelById(LOG_CHANNEL).sendMessageEmbeds(builder.build()).queue();
+                    Driver.jda.getTextChannelById(LOG_CHANNEL).getManager().setName("Supporters: " + SupporterCount.getCount()).queue();
+                } catch(Exception e) {
+                    // Ignore if user doesn't have role
+                }
             }
         }
     }
